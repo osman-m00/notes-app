@@ -8,7 +8,7 @@ export const NotesProvider = ({children}) => {
 
     //this useEffect is to load notes from the local storage and set them to our state
     useEffect(()=>{
-        const savedNotes = JSON.parse(localStorage.getItem("notes") || []);
+        const savedNotes = JSON.parse(localStorage.getItem("notes") ?? "[]");
         setNotes(savedNotes);
     }, []);
 
@@ -19,10 +19,12 @@ export const NotesProvider = ({children}) => {
     }, [notes]);
 
     //the functions that will modify notes
-    const addNote = (text) =>{setNotes([...notes, {id:Date.now, text}])};
+    const addNote = (text) =>{setNotes([...notes, {id:Date.now(), text}])};
     const deleteNote = (id) => setNotes(notes.filter((note)=> note.id!==id));
     const editNote = (id, newText) => {
-        setNotes(notes.map((note)=>{note.id==id ? {...note, text: newText} : note}))}
+        setNotes(notes.map((note) =>
+            note.id === id ? { ...note, text: newText } : note
+          ));}
 
     return (
         <NotesContext.Provider value={{ notes, addNote, deleteNote, editNote }}>
